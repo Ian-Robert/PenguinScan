@@ -97,7 +97,7 @@ bool ArgParser::parse(int argc, char* argv[], ScanConfig& config) {
 bool ArgParser::parsePortRange(const std::string& value, ScanConfig& config) {
 	try {
 		size_t dashPos = value.find("-");
-		// IF A DASH IS FOUND (It is a range, e.g., "20-100") (npos means "No position)
+		// IF A DASH IS FOUND (It is a range, e.g., "20-100") (npos means "No position")
 		if (dashPos != std::string::npos) {
 			std::string startStr = value.substr(0, dashPos);
 			std::string endStr = value.substr(dashPos + 1);
@@ -144,6 +144,7 @@ void ArgParser::printHelp() const {
 		<< "     -ti --timeout        Timeout in miliseconds\n"
 		<< "     -v  --version        Show Version\n"
 		<< "     -h --help            Show this help message\n"
+		<< "     -b --banner          Grab Banners? (bool)  \n"
 		<< std::endl;
 }
 
