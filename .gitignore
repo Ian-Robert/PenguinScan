@@ -1,0 +1,22 @@
+# CMake / build artifacts
+/out/
+/build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestfile.cmake
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Compiled binaries
+*.exe
+*.dll
+*.lib
+*.pdb
+
+# OS-specific
+.DS_Store
+Thumbs.db
