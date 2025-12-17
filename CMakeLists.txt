@@ -24,7 +24,7 @@ add_executable(PenguinScan)
 target_sources(PenguinScan
     PRIVATE
         src/main.cpp
-)
+ "include/cli/ArgParser.h" "src/cli/ArgParser.cpp")
 
 # -----------------------------
 # Include directories
