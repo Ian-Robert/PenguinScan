@@ -23,6 +23,5 @@ public:
 	void printHelp() const;
 	void printVersion() const;
 private:
-	bool isInteger(const std::string &val) const;
 	bool parsePortRange(const std::string& value, ScanConfig& config);
 };
