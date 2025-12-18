@@ -24,7 +24,7 @@ add_executable(PenguinScan)
 target_sources(PenguinScan
     PRIVATE
         src/main.cpp
- "include/cli/ArgParser.h" "src/cli/ArgParser.cpp" "include/net/SocketContext.h" "src/net/SocketContext.cpp" "include/net/TcpSocket.h" "src/net/TcpSocket.cpp" "include/engine/ScanningEngine.h" "src/engine/ScanningEngine.cpp")
+ "include/cli/ArgParser.h" "src/cli/ArgParser.cpp" "include/net/SocketContext.h" "src/net/SocketContext.cpp" "include/net/TcpSocket.h" "src/net/TcpSocket.cpp" "include/engine/ScanningEngine.h" "src/engine/ScanningEngine.cpp" "include/net/ScanResult.h")
 
 # -----------------------------
 # Include directories

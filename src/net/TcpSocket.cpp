@@ -28,31 +28,68 @@ TcpSocket::~TcpSocket() {
 	}
 }
 
-bool TcpSocket::connect(const std::string& ip, int port, int timeoutMs) {
-	// 2. Setup the Address Structure
-	// socketaddr_in is a struct that holds the TargetIP and Port
+void TcpSocket::setNonBlocking(bool mode) {
+	u_long iMode = mode ? 1 : 0;
+	ioctlsocket(m_socket, FIONBIO, &iMode);
+}
+
+ScanResult TcpSocket::connect(const std::string& ip, int port, int timeoutMs) {
+	
+	if (!m_isValid) return ScanResult::FAILURE;
+
 	sockaddr_in serverAddr;
-	serverAddr.sin_family = AF_INET; // IPv4
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_port = htons(static_cast<unsigned short>(port));
+	inet_pton(AF_INET, ip.c_str(), &serverAddr.sin_addr);
 
-	// 3. Convert Port to Network Byte Order
-	// Computers use Little Endian (Intel/AMD) but the internet uses Big Endian
-	// htons() = "Host TO Network Short" handles this flip for us
-	serverAddr.sin_port = htons(port);
+	// Switch to non-blocking mode
+	setNonBlocking(true);
 
-	// 4. Convert String IP to Binary IP
-	// inet_pton = "Pointer to String to Number"
-	// It returns 1 on success.
-	if (inet_pton(AF_INET, ip.c_str(), &serverAddr.sin_addr) <= 0) {
-		std::cerr << "Invalid IP address format: " << ip << std::endl;
-		return false;
-	}
-
-	// 5. Attempt Connection
-	// This will block until success or OS timeout (about 20 sec)
+	// Start Connection
 	int result = ::connect(m_socket, (sockaddr*)&serverAddr, sizeof(serverAddr));
-	if (result == SOCKET_ERROR)
-	{
-		return false;
+	if (result == SOCKET_ERROR) {
+		if (WSAGetLastError() != WSAEWOULDBLOCK) {
+			return ScanResult::FAILURE;
+		}
 	}
-	return true;
+
+	// Wait timeout using select()
+	fd_set writeSet;
+	FD_ZERO(&writeSet);
+	FD_SET(m_socket, &writeSet);
+
+	timeval tv;
+	tv.tv_sec = timeoutMs / 1000;
+	tv.tv_usec = (timeoutMs % 1000) * 1000;
+
+	// Select() returns:
+	//  0 -> Timeout (port is filtered)
+	// >0 -> Socket is Open or Closed
+	// -1 -> Error
+	int selectResult = select(0, NULL, &writeSet, NULL, &tv);
+
+	if (selectResult == 0) {
+		return ScanResult::FILTERED;
+	}
+	else if (selectResult == SOCKET_ERROR) {
+		return ScanResult::FAILURE;
+	}
+
+	// Check if it was open or refused by checking the error code on the socket itself
+	int soError;
+	int len = sizeof(soError);
+	getsockopt(m_socket, SOL_SOCKET, SO_ERROR, (char*)&soError, &len);
+
+	if (soError == 0) {
+		return ScanResult::OPEN;
+	}
+	else if (soError == WSAECONNREFUSED) {
+		return ScanResult::CLOSED;
+	}
+	else {
+		return ScanResult::FILTERED;
+	}
+	
+
+
 }

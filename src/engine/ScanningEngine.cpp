@@ -58,12 +58,15 @@ void ScanningEngine::worker(const std::string& target, int timeout, std::atomic<
 
 		// Do work (scan)
 		TcpSocket socket;
-		bool isOpen = socket.connect(target, port, timeout);
+		ScanResult result = socket.connect(target, port, timeout);
 			
-		if (isOpen) {
-			// Lock console so text doesn't mix
+		if (result == ScanResult::OPEN) {
 			std::lock_guard<std::mutex> lock(consoleMutex);
-			std::cout << "[+] Port " << port << " is OPEN" << std::endl;
+			std::cout << "[+] port " << port << " is OPEN" << std::endl;
+		}
+		else if (result == ScanResult::FILTERED) {
+			std::lock_guard<std::mutex> lock(consoleMutex);
+			std::cout << "[+] port " << port << "is FILTERED" << std::endl;
 		}
 	}
 }
