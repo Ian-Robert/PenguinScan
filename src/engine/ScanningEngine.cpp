@@ -45,41 +45,36 @@ void ScanningEngine::run(const ScanConfig &config) {
 	std::cout << "Scan complete" << std::endl;
 }
 
+// engine/ScanningEngine.cpp
+
 void ScanningEngine::worker(const std::string& target, int timeout, std::atomic<int>& currentPort, int endPort, std::mutex& consoleMutex, bool showBanner) {
 	while (true) {
-		// Grab work
-		// fetch_add return the current value, then increments it atomically
+		// 1. Grab next port
 		int port = currentPort.fetch_add(1);
+		if (port > endPort) return;
 
-		// DEBUG
-		if (port % 100 == 0) {
-			std::cout << "." << std::flush;
-		}
-
-		if (port > endPort) {
-			return;
-		}
-
-		// Do work (scan)
+		// 2. Scan
 		TcpSocket socket;
 		ScanResult result = socket.connect(target, port, timeout);
-			
+
 		if (result == ScanResult::OPEN) {
 			std::string banner = "";
-			if (showBanner) {
-				banner = socket.recieveBanner(2000);
-			}
-			std::lock_guard<std::mutex> lock(consoleMutex);
-			std::cout << "[+] port " << port << " is OPEN";
 
-			if (!banner.empty()) {
-				std::cout << " [Version: " << banner << "]";
+			// 3. Grab Banner (Slow operation - NO LOCK yet)
+			if (showBanner) {
+				banner = socket.receiveBanner(2000);
 			}
-			std::cout << std::endl;
+
+			// 4. Print Result (Fast operation - WITH LOCK)
+			{
+				std::lock_guard<std::mutex> lock(consoleMutex);
+				std::cout << "[+] Port " << port << " is OPEN";
+				if (!banner.empty()) {
+					std::cout << "  [Version: " << banner << "]";
+				}
+				std::cout << std::endl;
+			} // Lock releases here immediately
 		}
-		else if (result == ScanResult::FILTERED) {
-			std::lock_guard<std::mutex> lock(consoleMutex);
-			std::cout << "[+] port " << port << " is FILTERED" << std::endl;
-		}
+		// FILTERED block removed to prevent locking floods
 	}
 }

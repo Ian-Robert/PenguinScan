@@ -9,7 +9,7 @@ struct ScanConfig {
 	std::string outfile;
 	int startPort = 1;
 	int endPort = 1024;
-	int speed = 1;
+	int speed = 2;
 	int timeout = 1000;
 	bool showBanner = false;
 	bool help = false;
