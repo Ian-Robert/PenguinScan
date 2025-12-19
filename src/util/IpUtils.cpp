@@ -4,11 +4,34 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include <sstream>
 
 std::vector<std::string> IpUtils::expandTarget(const std::string& target) {
 
 	std::cout << "[DEBUG] expandTarget received: '" << target << "'" << std::endl;
 	std::vector<std::string> ips;
+
+	// Handle Comma Separated IP Addresses
+	if (target.find(',') != std::string::npos) {
+		std::stringstream ss(target); 
+		std::string segment;
+
+		while (std::getline(ss, segment, ',')) {
+			// trim whitespace (stay sus of this while debugging)
+			size_t first = segment.find_first_not_of(' ');
+			if (std::string::npos == first) continue;
+			size_t last = segment.find_last_not_of(' ');
+			segment = segment.substr(first, (last - first + 1));
+
+			// recursively call function for list of ip addresses
+			std::vector<std::string> subList = expandTarget(segment);
+
+			// add results to our main list
+			ips.insert(ips.end(), subList.begin(), subList.end());
+
+		}
+		return ips;
+	}
 
 	size_t slashPos = target.find('/');
 	if (slashPos == std::string::npos) {
