@@ -1,47 +1,56 @@
 #include "engine/ScanningEngine.h"
 #include "net/TcpSocket.h"
+#include "util/IpUtils.h"
 #include <iostream>
 #include <string>
 
 void ScanningEngine::run(const ScanConfig &config) {
-	std::cout << "Starting scan on " << config.target << "..." << std::endl;
 
-	int threadCount = 1;
-	switch (config.speed) {
-	case 0: threadCount = 1; break;
-	case 1: threadCount = 5; break;
-	case 2: threadCount = 20; break;
-	case 3: threadCount = 50; break;
-	case 4: threadCount = 100; break;
-	case 5: threadCount = 200; break;
-	}
-	
-	// Atomic lets threads safely grab the next port # without fighting
-	std::atomic<int> currentPort(config.startPort);
-	
-	// Mutex prevents threads from garbling console output
-	std::mutex consoleMutex;
+	std::vector<std::string> targets = IpUtils::expandTarget(config.target);
+	std::cout << targets.size() << " IP(s) found" << std::endl;
 
-	std::vector<std::thread> threadPool;
+	for (const std::string& targetIp : targets) {
+		std::cout << "\nScanning Target: " << targetIp << "..." << std::endl;
+		std::cout << "Starting scan on " << targetIp << "..." << std::endl;
 
-	// Pass shared resources by reference count
-	for (int i = 0; i < threadCount; ++i)
-	{
-		threadPool.emplace_back(&ScanningEngine::worker, this,
-			config.target,
-			config.timeout,
-			std::ref(currentPort),
-			config.endPort,
-			std::ref(consoleMutex), config.showBanner);
-	}
+		int threadCount = 1;
+		switch (config.speed) {
+		case 0: threadCount = 1; break;
+		case 1: threadCount = 5; break;
+		case 2: threadCount = 20; break;
+		case 3: threadCount = 50; break;
+		case 4: threadCount = 100; break;
+		case 5: threadCount = 200; break;
+		}
 
-	// Wait for every thread to finish
-	for (std::thread& t : threadPool)
-	{
-		if (t.joinable()) {
-			t.join();
+		// Atomic lets threads safely grab the next port # without fighting
+		std::atomic<int> currentPort(config.startPort);
+
+		// Mutex prevents threads from garbling console output
+		std::mutex consoleMutex;
+
+		std::vector<std::thread> threadPool;
+
+		// Pass shared resources by reference count
+		for (int i = 0; i < threadCount; ++i)
+		{
+			threadPool.emplace_back(&ScanningEngine::worker, this,
+				targetIp,
+				config.timeout,
+				std::ref(currentPort),
+				config.endPort,
+				std::ref(consoleMutex), config.showBanner);
+		}
+
+		// Wait for every thread to finish
+		for (std::thread& t : threadPool)
+		{
+			if (t.joinable()) {
+				t.join();
+			}
 		}
 	}
+
 	std::cout << "Scan complete" << std::endl;
 }
 
