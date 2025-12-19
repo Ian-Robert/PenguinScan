@@ -86,6 +86,18 @@ bool ArgParser::parse(int argc, char* argv[], ScanConfig& config) {
 		{
 			config.showBanner = true;
 		}
+		else if (arg == "--save" || arg == "-sa")
+		{
+			if (i + 2 < argc) {
+				config.saveToFile = true;
+				config.outfile = argv[++i];
+				config.outFilePath = argv[++i];
+			}
+			else {
+				std::cerr << "[ERROR] -s requres two arguments <filename> <directory>";
+				return false;
+			}
+		}
 		else {
 			std::cerr << "Unknown Argument: " << arg << std::endl;
 			return false;
@@ -137,14 +149,15 @@ bool ArgParser::parsePortRange(const std::string& value, ScanConfig& config) {
 void ArgParser::printHelp() const {
 	std::cout << "Usage: scanner [options]\n"
 		<< "Options: \n"
-		<< "     -t --target <IP>     Target IP Address\n"
-		<< "     -p --ports <range>   Port Range (80 or 20-100)\n"
+		<< "     -t  --target <IP>    Target IP Address\n"
+		<< "     -p  --ports <range>  Port Range (80 or 20-100)\n"
 		<< "     -ap --all-ports      Scan all ports (1-65535)\n"
-		<< "     -s --speed           Scan Speed (0-5)\n"
+		<< "     -s  --speed          Scan Speed (0-5)\n"
 		<< "     -ti --timeout        Timeout in miliseconds\n"
 		<< "     -v  --version        Show Version\n"
-		<< "     -h --help            Show this help message\n"
-		<< "     -b --banner          Grab Banners? (bool)  \n"
+		<< "     -h  --help           Show this help message\n"
+		<< "     -b  --banner         Grab Banners (bool)  \n"
+		<< "     -sa --save           Save to a .json or .txt file  \n"
 		<< std::endl;
 }
 

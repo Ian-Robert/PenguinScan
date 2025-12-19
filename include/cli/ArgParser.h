@@ -6,7 +6,8 @@
 struct ScanConfig {
 	std::string target;
 	std::string output = "txt";
-	std::string outfile;
+	std::string outfile = "scan_results.txt";
+	std::string outFilePath = "./";
 	int startPort = 1;
 	int endPort = 1024;
 	int speed = 2;
@@ -14,6 +15,7 @@ struct ScanConfig {
 	bool showBanner = false;
 	bool help = false;
 	bool version = false;
+	bool saveToFile = false;
 };
 
 class ArgParser {

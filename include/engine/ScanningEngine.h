@@ -1,5 +1,6 @@
 #pragma once
 #include "cli/ArgParser.h"
+#include "ScanTypes.h"
 #include <vector>
 #include <thread>
 #include <mutex>
@@ -13,5 +14,6 @@ private:
 		int timeout,
 		std::atomic<int>& currentPort,
 		int endPort,
-		std::mutex& consoleMutex, bool showBanner);
+		std::mutex& consoleMutex, bool showBanner,
+		std::vector<ServiceResult> &results);
 };
