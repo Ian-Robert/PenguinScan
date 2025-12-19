@@ -5,7 +5,6 @@
 
 void ScanningEngine::run(const ScanConfig &config) {
 	std::cout << "Starting scan on " << config.target << "..." << std::endl;
-	std::cout << "Starting scan on port " << config.startPort << "..." << std::endl;
 
 	int threadCount = 1;
 	switch (config.speed) {
@@ -33,7 +32,7 @@ void ScanningEngine::run(const ScanConfig &config) {
 			config.timeout,
 			std::ref(currentPort),
 			config.endPort,
-			std::ref(consoleMutex));
+			std::ref(consoleMutex), config.showBanner);
 	}
 
 	// Wait for every thread to finish
@@ -46,11 +45,16 @@ void ScanningEngine::run(const ScanConfig &config) {
 	std::cout << "Scan complete" << std::endl;
 }
 
-void ScanningEngine::worker(const std::string& target, int timeout, std::atomic<int>& currentPort, int endPort, std::mutex& consoleMutex) {
+void ScanningEngine::worker(const std::string& target, int timeout, std::atomic<int>& currentPort, int endPort, std::mutex& consoleMutex, bool showBanner) {
 	while (true) {
 		// Grab work
 		// fetch_add return the current value, then increments it atomically
 		int port = currentPort.fetch_add(1);
+
+		// DEBUG
+		if (port % 100 == 0) {
+			std::cout << "." << std::flush;
+		}
 
 		if (port > endPort) {
 			return;
@@ -61,12 +65,21 @@ void ScanningEngine::worker(const std::string& target, int timeout, std::atomic<
 		ScanResult result = socket.connect(target, port, timeout);
 			
 		if (result == ScanResult::OPEN) {
+			std::string banner = "";
+			if (showBanner) {
+				banner = socket.recieveBanner(2000);
+			}
 			std::lock_guard<std::mutex> lock(consoleMutex);
-			std::cout << "[+] port " << port << " is OPEN" << std::endl;
+			std::cout << "[+] port " << port << " is OPEN";
+
+			if (!banner.empty()) {
+				std::cout << " [Version: " << banner << "]";
+			}
+			std::cout << std::endl;
 		}
 		else if (result == ScanResult::FILTERED) {
 			std::lock_guard<std::mutex> lock(consoleMutex);
-			std::cout << "[+] port " << port << "is FILTERED" << std::endl;
+			std::cout << "[+] port " << port << " is FILTERED" << std::endl;
 		}
 	}
 }

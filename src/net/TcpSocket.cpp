@@ -24,6 +24,7 @@ TcpSocket::TcpSocket()
 TcpSocket::~TcpSocket() {
 	if (m_isValid)
 	{
+		shutdown(m_socket, SD_BOTH);
 		closesocket(m_socket);
 	}
 }
@@ -93,3 +94,38 @@ ScanResult TcpSocket::connect(const std::string& ip, int port, int timeoutMs) {
 
 
 }
+
+std::string TcpSocket::recieveBanner(int timeoutMs) {
+	if (!m_isValid) return "";
+
+	// Wait for data
+	fd_set readSet;
+	FD_ZERO(&readSet);
+	FD_SET(m_socket, &readSet);
+
+	timeval tv;
+	tv.tv_sec = timeoutMs / 1000;
+	tv.tv_usec = (timeoutMs % 1000) * 1000;
+
+	// use select() again to see if there is data waiting to be read
+	int selectResult = select(0, &readSet, NULL, NULL, &tv);
+	if (selectResult <= 0) {return "";}
+
+	char buffer[BANNER_BUFFER_SIZE];
+	int bytesRecieved = recv(m_socket, buffer, BANNER_BUFFER_SIZE - 1, 0);
+
+	if (bytesRecieved > 0) {
+		buffer[bytesRecieved] = '\0';
+
+
+		std::string banner = std::string(buffer);
+		while (!banner.empty() && (banner.back() == '\r' || banner.back() == '\n')); {
+			banner.pop_back();
+		}
+	
+		return banner;
+
+	}
+	return "";
+}
+

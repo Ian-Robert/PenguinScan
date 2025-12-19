@@ -13,5 +13,5 @@ private:
 		int timeout,
 		std::atomic<int>& currentPort,
 		int endPort,
-		std::mutex& consoleMutex);
+		std::mutex& consoleMutex, bool showBanner);
 };
