@@ -49,23 +49,17 @@ void ScanningEngine::run(const ScanConfig &config) {
 
 void ScanningEngine::worker(const std::string& target, int timeout, std::atomic<int>& currentPort, int endPort, std::mutex& consoleMutex, bool showBanner) {
 	while (true) {
-		// 1. Grab next port
 		int port = currentPort.fetch_add(1);
 		if (port > endPort) return;
 
-		// 2. Scan
 		TcpSocket socket;
 		ScanResult result = socket.connect(target, port, timeout);
 
 		if (result == ScanResult::OPEN) {
 			std::string banner = "";
-
-			// 3. Grab Banner (Slow operation - NO LOCK yet)
 			if (showBanner) {
 				banner = socket.receiveBanner(2000);
 			}
-
-			// 4. Print Result (Fast operation - WITH LOCK)
 			{
 				std::lock_guard<std::mutex> lock(consoleMutex);
 				std::cout << "[+] Port " << port << " is OPEN";
@@ -75,6 +69,5 @@ void ScanningEngine::worker(const std::string& target, int timeout, std::atomic<
 				std::cout << std::endl;
 			} // Lock releases here immediately
 		}
-		// FILTERED block removed to prevent locking floods
 	}
 }

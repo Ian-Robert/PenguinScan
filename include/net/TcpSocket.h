@@ -1,5 +1,6 @@
 #pragma once
-#include <WinSock2.h>
+#include "net/Platform.h"
+// #include <WinSock2.h
 #include "net/ScanResult.h"
 #include <string>
 

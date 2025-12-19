@@ -1,13 +1,15 @@
 #include "net/SocketContext.h"
+#include "net/Platform.h"
 #include <iostream>
 #include <string>
-#include <WinSock2.h>
-#include <WS2tcpip.h>
+//#include <WinSock2.h>
+//#include <WS2tcpip.h>
 
 #pragma comment(lib, "Ws2_32.lib") // DO NOT TOUCH, NEED TO PREVENT LINKING ERRORS ON MSVC
 
 SocketContext::SocketContext()
 {
+#ifdef _WIN32
 	WSADATA wsaData;
 	// Request version 2.2
 	// MAKEWORD(2, 2) creates the version identifier for Winsock 2.2
@@ -17,11 +19,14 @@ SocketContext::SocketContext()
 		throw std::runtime_error("WSAStartup failed with error: " + std::to_string(result));
 	}
 	std::cout << "[DEBUG] Winsock Intialized Succesfully" << std::endl;
+#endif
 }
 
 SocketContext::~SocketContext() 
 {
+#ifdef _WIN32
 	// Should run automatically when SocketContext Object goes out of scope
 	WSACleanup();
 	std::cout << "[DEBUG] Winsock cleaned up" << std::endl;
+#endif
 }

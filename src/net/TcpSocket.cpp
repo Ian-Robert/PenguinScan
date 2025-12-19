@@ -1,5 +1,4 @@
 #include "net/TcpSocket.h"
-#include <ws2tcpip.h>
 #include <iostream>
 
 #pragma comment(lib, "Ws2_32.lib")
@@ -13,7 +12,11 @@ TcpSocket::TcpSocket()
 	m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (m_socket == INVALID_SOCKET)
 	{
+#ifdef _WIN32
 		std::cerr << "Error Creating Socket: " << WSAGetLastError() << std::endl;
+#else
+		std::cerr << "Error Creating Socket " << errno << std::endl;
+#endif
 		m_isValid = false;
 	}
 	else {
@@ -30,8 +33,25 @@ TcpSocket::~TcpSocket() {
 }
 
 void TcpSocket::setNonBlocking(bool mode) {
+#ifdef _WIN32
 	u_long iMode = mode ? 1 : 0;
-	ioctlsocket(m_socket, FIONBIO, &iMode);
+	int result = ioctlsocket(m_socket, FIONBIO, &iMode);
+	if (result != 0) {
+		std::cerr << "[ERROR] WIndows Nonblocking failed" << std::endl;
+	}
+#else
+	// Linux
+	int flags = fcntl(m_socket, F_GETFL, 0);
+	if (flags == -1) return;
+
+	// Add or remove O_NONBLOCK flag
+	if (mode) {
+		fcntl(m_socket, F_SETFL, flags | O_NONBLOCK);
+	}
+	else {
+		fcntl(m_socket, F_SETFL, flags & ~O_NONBLOCK);
+	}
+#endif
 }
 
 ScanResult TcpSocket::connect(const std::string& ip, int port, int timeoutMs) {
@@ -49,9 +69,16 @@ ScanResult TcpSocket::connect(const std::string& ip, int port, int timeoutMs) {
 	// Start Connection
 	int result = ::connect(m_socket, (sockaddr*)&serverAddr, sizeof(serverAddr));
 	if (result == SOCKET_ERROR) {
+		#ifdef _WIN32
 		if (WSAGetLastError() != WSAEWOULDBLOCK) {
 			return ScanResult::FAILURE;
 		}
+		// Linux check
+		#else
+		if (errno != EINPROGRESS) {
+			return ScanResult::FAILURE;
+		}
+		#endif
 	}
 
 	// Wait timeout using select()
@@ -67,7 +94,7 @@ ScanResult TcpSocket::connect(const std::string& ip, int port, int timeoutMs) {
 	//  0 -> Timeout (port is filtered)
 	// >0 -> Socket is Open or Closed
 	// -1 -> Error
-	int selectResult = select(0, NULL, &writeSet, NULL, &tv);
+	int selectResult = select(m_socket + 1, NULL, &writeSet, NULL, &tv);
 
 	if (selectResult == 0) {
 		return ScanResult::FILTERED;
@@ -78,7 +105,12 @@ ScanResult TcpSocket::connect(const std::string& ip, int port, int timeoutMs) {
 
 	// Check if it was open or refused by checking the error code on the socket itself
 	int soError;
+
+#ifdef _WIN32
 	int len = sizeof(soError);
+#else
+	socklen_t len = sizeof(soError);
+#endif
 	getsockopt(m_socket, SOL_SOCKET, SO_ERROR, (char*)&soError, &len);
 
 	if (soError == 0) {
@@ -109,7 +141,7 @@ std::string TcpSocket::receiveBanner(int timeoutMs) {
 	tv.tv_usec = (timeoutMs % 1000) * 1000;
 
 	// Wait for data
-	if (select(0, &readSet, NULL, NULL, &tv) <= 0) {
+	if (select(m_socket + 1, &readSet, NULL, NULL, &tv) <= 0) {
 		return "";
 	}
 
