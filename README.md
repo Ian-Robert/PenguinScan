@@ -31,7 +31,7 @@ PenguinScan is a command-line reconnaissance tool designed to map networks, dete
 
 PenguinScan uses **CMake** for building. Ensure you have CMake (3.20+) and a C++ compiler installed.
 
-### 🐧 Linux / WSL (Ubuntu, Debian)
+### Linux / Mac
 
 ```bash
 # 1. Create a build directory
@@ -46,7 +46,7 @@ make
 ./PenguinScan -t 8.8.8.8 -p 53
 ```
 
-### Windows (Visual Studio / PowerShell)
+### Windows 
 
 ```powershell
 # 1. Create a build directory
