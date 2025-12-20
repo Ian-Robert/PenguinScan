@@ -85,19 +85,6 @@ cmake --build . --config Release
 
 ---
 
-📂 Project Structure
-
-```
-src/
-├── cli/          # Argument parsing and user input handling
-├── engine/       # Thread pooling and scan orchestration
-├── net/          # Raw socket wrappers (Cross-platform logic)
-├── util/         # IP math, file I/O, and reporting
-└── main.cpp      # Entry point
-```
-
----
-
 ## 🤸 Usage
 
 ```
@@ -115,11 +102,26 @@ src/
     -b,  --banner              Attempt to grab service banners
 
   OUTPUT:
-    -sa, --save <fmt> <dir>    Save results to file
-                               (Format: 0=Text, 1=JSON)
+    -sa, --save <fmt> <dir>    Save results to file e.g., -sa results.txt C:\Users\Name\Desktop
+                               
 
   MISC:
     -v,  --version             Show version information
     -h,  --help                Show this help message
 ```
+
+---
+
+📂 Project Structure
+
+```
+src/
+├── cli/          # Argument parsing and user input handling
+├── engine/       # Thread pooling and scan orchestration
+├── net/          # Raw socket wrappers (Cross-platform logic)
+├── util/         # IP math, file I/O, and reporting
+└── main.cpp      # Entry point
+```
+
+---
 
