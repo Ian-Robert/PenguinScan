@@ -13,7 +13,7 @@ PenguinScan is a command-line reconnaissance tool designed to map networks, dete
 
 * **Cross-Platform Architecture:** Uses a custom abstraction layer (`Platform.h`) to translate OS-specific socket calls, allowing a single codebase to run seamlessly on Windows, Mac, AND Linux.
 * **Multi-Threaded Engine:** Implements a **Producer-Consumer** threading model to scan hundreds of ports concurrently using `std::thread` and `std::atomic` synchronization.
-* **Smart Target Expansion:** **CIDR Support:** Automatically expands subnets (e.g., `192.168.1.1/24`).
+* **CIDR Support:** Automatically expands subnets (e.g., `192.168.1.1/24`).
 * **Structured Reporting:** Exports scan results to **JSON** or **Text** files for easy integration with other tools.
 * **Banner Grabbing:** Performs service discovery by analyzing initial server responses.
 
