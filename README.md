@@ -5,11 +5,11 @@
 ![Build](https://img.shields.io/badge/build-CMake-green.svg)
 ![License](https://img.shields.io/badge/license-MIT-orange.svg)
 
-** A high-performance, multi-threaded network scanner built from scratch in C++. **'
+** A high-performance, multi-threaded network scanner built from scratch in C++. **
 
 PenguinScan is a command-line reconnaissance tool designed to map networks, detect open ports, and fingerprint services. PenguinScan runs on a **custom-built, zero-dependency networking engine** that compiles natively on both Windows (Winsock2) and Linux (Berkeley Sockets).
 
--- 🚀 Key Features
+## 🚀 Key Features
 
 * **Cross-Platform Architecture:** Uses a custom abstraction layer (`Platform.h`) to translate OS-specific socket calls, allowing a single codebase to run seamlessly on Windows, Linux, and WSL.
 * **Multi-Threaded Engine:** Implements a **Producer-Consumer** threading model to scan hundreds of ports concurrently using `std::thread` and `std::atomic` synchronization.
