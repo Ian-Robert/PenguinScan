@@ -1,4 +1,4 @@
-﻿# 🐧 PenguinScan
+﻿# 🐧 Penguin Scan
 
 ![C++](https://img.shields.io/badge/standard-C%2B%2B20-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-lightgrey.svg)
