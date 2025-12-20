@@ -11,7 +11,7 @@ bool ArgParser::parse(int argc, char* argv[], ScanConfig& config) {
 	{
 		std::string arg = argv[i];
 
-		if (arg == "--help")
+		if (arg == "--help" || arg == "-h")
 		{
 			printHelp();
 			return false;
