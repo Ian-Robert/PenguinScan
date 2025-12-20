@@ -1,39 +1,100 @@
-# Port Scanner
+﻿# 🐧 PenguinScan
 
-## Overview
+![C++](https://img.shields.io/badge/standard-C%2B%2B20-blue.svg)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-lightgrey.svg)
+![Build](https://img.shields.io/badge/build-CMake-green.svg)
+![License](https://img.shields.io/badge/license-MIT-orange.svg)
 
-A cross-platform command-line TCP port scanner written in C++ 20.
+** A high-performance, multi-threaded network scanner built from scratch in C++. **'
 
-## Features
+PenguinScan is a command-line reconnaissance tool designed to map networks, detect open ports, and fingerprint services. PenguinScan runs on a **custom-built, zero-dependency networking engine** that compiles natively on both Windows (Winsock2) and Linux (Berkeley Sockets).
 
-- TCP connect scanning
-- Configurable timeouts and threat count
-- Scan speed setting
-  
-## Build
+-- 🚀 Key Features
 
-(placeholder)
+* **Cross-Platform Architecture:** Uses a custom abstraction layer (`Platform.h`) to translate OS-specific socket calls, allowing a single codebase to run seamlessly on Windows, Linux, and WSL.
+* **Multi-Threaded Engine:** Implements a **Producer-Consumer** threading model to scan hundreds of ports concurrently using `std::thread` and `std::atomic` synchronization.
+* **Smart Target Expansion:** * **CIDR Support:** Automatically expands subnets (e.g., `192.168.1.1/24`).
+* **Structured Reporting:** Exports scan results to **JSON** or **Text** files for easy integration with other tools.
+* **Banner Grabbing:** Performs service discovery by analyzing initial server responses.
 
-## Usage
+---
 
-(placeholder)
+## 🛠️ Engineering Highlights
 
-## Legal / Ethical Notice
+* **Concurrency:** Managed thread pools manually without frameworks, utilizing `std::mutex` for thread-safe console logging and vector storage.
+* **Memory Management:** Strict RAII adherence ensures sockets and file handles are automatically closed, preventing resource leaks during long scans.
+* **Modern Build System:** Fully integrated **CMake** configuration for portable building across operating systems.
 
-For educational and authorized testing only.
+---
 
-## CLI Contract
+## 📦 Build Instructions
 
-Required arguments: 
---target <target>. Accepts a single IP, CIDR, or Comma-seperated IPs
-Optional Arguments: 
---ports <range> (e.g. 1-1024)
---all-ports (1-65535)
---speed <1|2|3|4|5>
---timeout <ms>
---banner
---output <txt|json>
---out-file <path>
---help
---version
+PenguinScan uses **CMake** for building. Ensure you have CMake (3.20+) and a C++ compiler installed.
+
+### 🐧 Linux / WSL (Ubuntu, Debian)
+
+```bash
+# 1. Create a build directory
+mkdir build
+cd build
+
+# 2. Configure and Compile
+cmake ..
+make
+
+# 3. Run
+./PenguinScan -t 8.8.8.8 -p 53
+```
+
+### Windows (Visual Studio / PowerShell)
+
+```powershell
+# 1. Create a build directory
+mkdir build
+cd build
+
+# 2. Configure and Compile
+cmake ..
+cmake --build . --config Release
+
+# 3. Run
+.\Release\PenguinScan.exe -t 8.8.8.8 -p 53
+```
+
+---
+
+## 💻 Usage Examples
+
+*Basic Port Scan* Scan a single IP for common ports.
+
+```
+./PenguinScan -t 45.33.32.156 -p 22-80
+```
+
+*Network Sweep* Scan an entire local subnet for active web servers.
+
+```
+./PenguinScan -t 192.168.1.1/24 -p 443
+```
+
+*Mixed Targets & Reporting* Scan all ports on separate targets, then save the results to a JSON file on desktop.
+
+```
+./PenguinScan -t 8.8.8.8,192.168.1.0/24 -pa -s results.json C:\Users\Name\Desktop
+```
+
+---
+
+📂 Project Structure
+
+```
+src/
+├── cli/          # Argument parsing and user input handling
+├── engine/       # Thread pooling and scan orchestration
+├── net/          # Raw socket wrappers (Cross-platform logic)
+├── util/         # IP math, file I/O, and reporting
+└── main.cpp      # Entry point
+```
+
+
 
