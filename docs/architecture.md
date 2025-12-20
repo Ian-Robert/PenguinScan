@@ -51,6 +51,4 @@
 
 Windows uses Winsock and Linux uses POSIX sockets.
 
-## Concurrency Model
 
-(Placeholder For Now)
