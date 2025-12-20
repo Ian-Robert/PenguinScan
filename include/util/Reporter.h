@@ -12,4 +12,5 @@ public:
     // Save functions
     static void saveToJson(const std::string& fullPath, const std::vector<HostResult>& results);
     static void saveToText(const std::string& fullPath, const std::vector<HostResult>& results);
+    static std::string sanitize(const std::string& input);
 };

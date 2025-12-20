@@ -27,8 +27,7 @@ void Reporter::saveToJson(const std::string& fullPath, const std::vector<HostRes
         for (size_t j = 0; j < host.openPorts.size(); ++j) {
             file << "      {\n";
             file << "        \"port\": " << host.openPorts[j].port << ",\n";
-            // Simple quote escape could be added here
-            file << "        \"banner\": \"" << host.openPorts[j].banner << "\"\n";
+            file << "        \"banner\": \"" << sanitize(host.openPorts[j].banner) << "\"\n";
             file << "      }" << (j < host.openPorts.size() - 1 ? "," : "") << "\n";
         }
 
@@ -54,4 +53,27 @@ void Reporter::saveToText(const std::string& fullPath, const std::vector<HostRes
         file << "--------------------------------------\n";
     }
     std::cout << "Report saved to " << fullPath << std::endl;
+}
+
+std::string Reporter::sanitize(const std::string& input) {
+    std::string output;
+    output.reserve(input.length()); 
+
+    for (char c : input) {
+        switch (c) {
+        case '"':  output += "\\\""; break; 
+        case '\\': output += "\\\\"; break; 
+        case '\f': output += "\\f"; break;
+        case '\n': output += "\\n"; break; 
+        case '\r': output += "\\r"; break;
+        case '\t': output += "\\t"; break;
+        default:
+            if (c >= 0 && c <= 0x1f) {
+            }
+            else {
+                output += c;
+            }
+        }
+    }
+    return output;
 }
