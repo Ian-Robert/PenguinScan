@@ -10,13 +10,17 @@ TcpSocket::TcpSocket()
 	// SOCK_STREAM = TCP
 	// IPPROTO_TCP = TCP Protocol
 	m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+
+
+
 	if (m_socket == INVALID_SOCKET)
 	{
-#ifdef _WIN32
+		#ifdef _WIN32
 		std::cerr << "Error Creating Socket: " << WSAGetLastError() << std::endl;
-#else
+		#else
 		std::cerr << "Error Creating Socket " << errno << std::endl;
-#endif
+		#endif
 		m_isValid = false;
 	}
 	else {

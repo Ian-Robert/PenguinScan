@@ -25,8 +25,8 @@ void ScanningEngine::run(const ScanConfig &config) {
 		case 1: threadCount = 5; break;
 		case 2: threadCount = 20; break;
 		case 3: threadCount = 50; break;
-		case 4: threadCount = 100; break;
-		case 5: threadCount = 200; break;
+		case 4: threadCount = 75; break;
+		case 5: threadCount = 120; break;
 		}
 
 		// Atomic lets threads safely grab the next port # without fighting
