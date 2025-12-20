@@ -80,7 +80,7 @@ cmake --build . --config Release
 *Mixed Targets & Reporting* Scan all ports on separate targets, then save the results to a JSON file on desktop.
 
 ```
-./PenguinScan -t 8.8.8.8,192.168.1.0/24 -pa -s results.json C:\Users\Name\Desktop
+./PenguinScan -t 8.8.8.8,192.168.1.0/24 -ap -s results.json C:\Users\Name\Desktop
 ```
 
 ---
@@ -96,5 +96,30 @@ src/
 └── main.cpp      # Entry point
 ```
 
+---
 
+## 🤸 Usage
+
+```
+  TARGETING:
+    -t,  --target <IP/CIDR>    Target IP, range, or comma-separated list
+                               (e.g., 192.168.1.1, 10.0.0.0/24)
+
+  PORT CONFIGURATION:
+    -p,  --ports <range>       Port range (e.g., 80, 20-100)
+    -ap, --all-ports           Scan all ports (1-65535)
+
+  SCAN SETTINGS:
+    -s,  --speed <0-5>         Scan speed (0=Slowest, 5=Fastest)
+    -ti, --timeout <ms>        Connection timeout in milliseconds
+    -b,  --banner              Attempt to grab service banners
+
+  OUTPUT:
+    -sa, --save <fmt> <dir>    Save results to file
+                               (Format: 0=Text, 1=JSON)
+
+  MISC:
+    -v,  --version             Show version information
+    -h,  --help                Show this help message
+```
 

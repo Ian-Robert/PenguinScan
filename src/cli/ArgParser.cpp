@@ -147,20 +147,20 @@ bool ArgParser::parsePortRange(const std::string& value, ScanConfig& config) {
 }
 
 void ArgParser::printHelp() const {
-	std::cout << "Usage: scanner [options]\n"
+	std::cout 
 		<< "Options: \n"
-		<< "     -t  --target <IP>    Target IP Address\n"
-		<< "     -p  --ports <range>  Port Range (80 or 20-100)\n"
+		<< "     -t  --target <IP>    Target IP address\n"
+		<< "     -p  --ports <range>  Port range (80 or 20-100)\n"
 		<< "     -ap --all-ports      Scan all ports (1-65535)\n"
-		<< "     -s  --speed          Scan Speed (0-5)\n"
-		<< "     -ti --timeout        Timeout in miliseconds\n"
+		<< "     -s  --speed          Scan speed (0-5)\n"
+		<< "     -ti --timeout        Set Timeout in miliseconds\n"
 		<< "     -v  --version        Show Version\n"
 		<< "     -h  --help           Show this help message\n"
-		<< "     -b  --banner         Grab Banners (bool)  \n"
+		<< "     -b  --banner         Show Service Information \n"
 		<< "     -sa --save           Save to a .json or .txt file  \n"
 		<< std::endl;
 }
 
 void ArgParser::printVersion() const {
-	std::cout << "Version 0.1.0" << std::endl;
+	std::cout << "Version 1.0.0" << std::endl;
 }
