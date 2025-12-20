@@ -19,7 +19,7 @@ void ScanningEngine::run(const ScanConfig &config) {
 		HostResult currentHost;
 		currentHost.ip = targetIp;
 
-		int threadCount = 1;
+		int threadCount = 3;
 		switch (config.speed) {
 		case 0: threadCount = 1; break;
 		case 1: threadCount = 5; break;
@@ -32,7 +32,7 @@ void ScanningEngine::run(const ScanConfig &config) {
 		// Atomic lets threads safely grab the next port # without fighting
 		std::atomic<int> currentPort(config.startPort);
 
-		// Mutex prevents threads from garbling console output
+		// Mutex prevents threads from garbling console output 
 		std::mutex sharedMutex;
 
 		std::vector<std::thread> threadPool;
@@ -76,7 +76,6 @@ void ScanningEngine::run(const ScanConfig &config) {
 	}
 }
 
-// engine/ScanningEngine.cpp
 
 void ScanningEngine::worker(const std::string& target, int timeout, std::atomic<int>& currentPort, int endPort, std::mutex& sharedMutex, bool showBanner, std::vector<ServiceResult> &results) {
 	while (true) {
