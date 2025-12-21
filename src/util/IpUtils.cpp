@@ -8,7 +8,6 @@
 
 std::vector<std::string> IpUtils::expandTarget(const std::string& target) {
 
-	std::cout << "[DEBUG] expandTarget received: '" << target << "'" << std::endl;
 	std::vector<std::string> ips;
 
 	// Handle Comma Separated IP Addresses
@@ -41,8 +40,6 @@ std::vector<std::string> IpUtils::expandTarget(const std::string& target) {
 
 	std::string ipStr = target.substr(0, slashPos);
 	int cidr = std::stoi(target.substr(slashPos + 1));
-
-	std::cout << "[DEBUG] Parsing CIDR from string: '" << cidr << "'" << std::endl;
 
 	if (cidr < 0 || cidr > 32) { return ips; }
 
