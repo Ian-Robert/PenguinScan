@@ -4,7 +4,7 @@
 #include <vector>
 
 struct ScanConfig {
-	std::string target;
+	std::string target = "127.0.0.1";
 	std::string output = "txt";
 	std::string outfile = "scan_results.txt";
 	std::string outFilePath = "./";
