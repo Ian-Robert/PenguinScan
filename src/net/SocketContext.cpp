@@ -18,7 +18,7 @@ SocketContext::SocketContext()
 	{
 		throw std::runtime_error("WSAStartup failed with error: " + std::to_string(result));
 	}
-	std::cout << "[DEBUG] Winsock Intialized Succesfully" << std::endl;
+	
 #endif
 }
 
@@ -27,6 +27,6 @@ SocketContext::~SocketContext()
 #ifdef _WIN32
 	// Should run automatically when SocketContext Object goes out of scope
 	WSACleanup();
-	std::cout << "[DEBUG] Winsock cleaned up" << std::endl;
+
 #endif
 }
