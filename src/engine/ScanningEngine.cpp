@@ -101,7 +101,7 @@ void ScanningEngine::worker(const std::string& target, int timeout, std::atomic<
 				ServiceResult sr;
 				sr.port = port;
 				sr.banner = banner;
-				results.push_back(sr);
+				results.push_back(sr);// adding to results vector for printing data 
 			} // Lock releases here immediately
 		}
 	}

@@ -1,4 +1,4 @@
-﻿# 🐧 Penguin Scan
+﻿# 🐧 Penguin Scan 🐧
 
 ![C++](https://img.shields.io/badge/standard-C%2B%2B20-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-lightgrey.svg)
@@ -9,7 +9,7 @@
 
 PenguinScan is a command-line reconnaissance tool designed to map networks, detect open ports, and fingerprint services. PenguinScan runs on a **custom-built, zero-dependency networking engine** that compiles natively on both Windows (Winsock2) and Linux (Berkeley Sockets).
 
-## 🚀 Key Features
+## Key Features
 
 * **Cross-Platform Architecture:** Uses a custom abstraction layer (`Platform.h`) to translate OS-specific socket calls, allowing a single codebase to run seamlessly on Windows, Mac, AND Linux.
 * **Multi-Threaded Engine:** Implements a **Producer-Consumer** threading model to scan hundreds of ports concurrently using `std::thread` and `std::atomic` synchronization.
@@ -19,7 +19,7 @@ PenguinScan is a command-line reconnaissance tool designed to map networks, dete
 
 ---
 
-## 🛠️ Engineering Highlights
+## Engineering Highlights
 
 * **Concurrency:** Managed thread pools manually without frameworks, utilizing `std::mutex` for thread-safe console logging and vector storage.
 * **Memory Management:** Strict RAII adherence ensures sockets and file handles are automatically closed, preventing resource leaks during long scans.
@@ -27,7 +27,7 @@ PenguinScan is a command-line reconnaissance tool designed to map networks, dete
 
 ---
 
-## 📦 Build Instructions
+## Build Instructions
 
 PenguinScan uses **CMake** for building. Ensure you have CMake (3.20+) and a C++ compiler installed.
 
@@ -63,7 +63,7 @@ cmake --build . --config Release
 
 ---
 
-## 💻 Usage Examples
+## Usage Examples
 
 *Basic Port Scan* Scan a single IP for common ports.
 
@@ -85,7 +85,7 @@ cmake --build . --config Release
 
 ---
 
-## 🤸 Usage
+## Usage
 
 ```
   TARGETING:
@@ -110,18 +110,4 @@ cmake --build . --config Release
     -h,  --help                Show this help message
 ```
 
----
-
-📂 Project Structure
-
-```
-src/
-├── cli/          # Argument parsing and user input handling
-├── engine/       # Thread pooling and scan orchestration
-├── net/          # Raw socket wrappers (Cross-platform logic)
-├── util/         # IP math, file I/O, and reporting
-└── main.cpp      # Entry point
-```
-
----
 
