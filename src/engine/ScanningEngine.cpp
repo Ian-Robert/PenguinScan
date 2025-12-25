@@ -19,7 +19,7 @@ void ScanningEngine::run(const ScanConfig &config) {
 		HostResult currentHost;
 		currentHost.ip = targetIp;
 
-		int threadCount = 3;
+		int threadCount = std::thread::hardware_concurrency();
 		switch (config.speed) {
 		case 0: threadCount = 1; break;
 		case 1: threadCount = 5; break;
